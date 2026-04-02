@@ -1,0 +1,47 @@
+.app-shell{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:var(--sidebar-width);background:var(--sidebar-bg);display:flex;flex-direction:column;flex-shrink:0;height:100vh;z-index:20}
+.sidebar-header{height:var(--header-height);display:flex;align-items:center;padding:0 1.25rem;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
+.sidebar-logo{display:flex;align-items:center;gap:.625rem}
+.logo-icon{width:32px;height:32px;background:var(--color-primary);border-radius:var(--radius);display:flex;align-items:center;justify-content:center}
+.logo-icon .material-symbols-outlined{font-size:20px;color:#fff}
+.logo-text{font-size:1.0625rem;font-weight:700;letter-spacing:-.01em;color:#fff}
+.logo-accent{color:var(--color-primary-200)}
+.sidebar-nav{flex:1;overflow-y:auto;padding:1.25rem .75rem}
+.nav-section-label{padding:0 .75rem;margin-bottom:.5rem;font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(148,163,184,.6)}
+.nav-link{display:flex;align-items:center;gap:.75rem;padding:.5rem .75rem;font-size:.8125rem;font-weight:500;color:var(--sidebar-text);border-radius:var(--radius);transition:all var(--transition-fast);margin-bottom:2px;text-decoration:none;opacity:.7}
+.nav-link:hover{background:var(--sidebar-hover);opacity:1;color:#fff}
+.nav-link.active{background:var(--sidebar-active-bg);color:#fff;opacity:1;box-shadow:0 2px 8px rgba(19,127,236,.3)}
+.nav-icon{font-size:20px;transition:color var(--transition-fast)}
+.nav-link.active .nav-icon{color:#fff}
+.sidebar-footer{padding:.75rem;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0}
+.sidebar-user{display:flex;align-items:center;gap:.625rem}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:.8125rem;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-email{font-size:.6875rem;color:rgba(148,163,184,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.main-content{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;background:var(--color-bg)}
+.top-header{background:var(--color-surface);border-bottom:1px solid var(--color-border);height:var(--header-height);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;flex-shrink:0;z-index:10}
+.header-left{display:flex;align-items:center;gap:.75rem}
+.header-title{font-size:1rem;font-weight:600;color:var(--color-text)}
+.header-divider{width:1px;height:1rem;background:var(--color-border)}
+.header-date{font-size:.8125rem;color:var(--color-text-muted)}
+.header-right{display:flex;align-items:center;gap:.75rem}
+.search-box{position:relative}
+.search-icon{position:absolute;left:.625rem;top:50%;transform:translateY(-50%);font-size:18px;color:var(--color-text-muted);pointer-events:none}
+.search-input{padding:.375rem .75rem .375rem 2.25rem;font-size:.8125rem;font-family:var(--font-family);border:1px solid var(--color-border);border-radius:var(--radius);background:var(--color-bg);color:var(--color-text);width:220px;outline:none;transition:all var(--transition-fast);height:36px}
+.search-input:focus{border-color:var(--color-primary);box-shadow:0 0 0 3px var(--color-primary-100);background:var(--color-surface)}
+.search-input::placeholder{color:var(--color-text-placeholder)}
+.page-content{flex:1;overflow-y:auto;padding:1.5rem}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem}
+.section-title{font-size:1.25rem;font-weight:700;color:var(--color-text);letter-spacing:-.01em}
+.section-subtitle{margin-top:.25rem;font-size:.8125rem;color:var(--color-text-muted)}
+.page-header-actions{display:flex;gap:.5rem}
+@media(max-width:1024px){
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);z-index:100;box-shadow:var(--shadow-xl)}
+  .sidebar.open{transform:translateX(0)}
+  .top-header{padding:0 1rem}
+  .page-content{padding:1rem}
+  .search-box{display:none}
+  .page-header{flex-direction:column;gap:.75rem}
+  .stats-grid{grid-template-columns:1fr!important}
+  .requests-layout{grid-template-columns:1fr!important}
+}
