@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 
 export default function Preferences() {
   const { user, updateProfile } = useAuth()
+  const { theme, setTheme } = useTheme()
   const [form, setForm] = useState({
     full_name: user?.full_name || '',
     email: user?.email || '',
@@ -10,13 +12,16 @@ export default function Preferences() {
     role: user?.role || '',
   })
   const [saved, setSaved] = useState(false)
-  const [theme, setTheme] = useState('light')
+  const [saving, setSaving] = useState(false)
   const [notifications, setNotifications] = useState(true)
   const [language, setLanguage] = useState('pt-BR')
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault()
+    setSaving(true)
     // VULN: Mass Assignment — sends all fields including role
     await updateProfile(form)
+    setSaving(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 3000)
   }
@@ -39,37 +44,39 @@ export default function Preferences() {
           </div>
           <div className="pref-card-body">
             {saved && (
-              <div style={{ padding: '.625rem 1rem', background: 'var(--color-success-bg)', color: 'var(--color-success-text)', borderRadius: 'var(--radius)', fontSize: '.8125rem', marginBottom: '1rem' }}>
+              <div className="pref-success-msg">
                 ✓ Preferências salvas com sucesso!
               </div>
             )}
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Nome Completo</label>
-                <input type="text" className="form-input" value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} />
+            <form onSubmit={handleSave}>
+              <div className="form-row" style={{ marginBottom: '1rem' }}>
+                <div className="form-group">
+                  <label className="form-label">Nome Completo</label>
+                  <input type="text" className="form-input" value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">E-mail</label>
+                  <input type="email" className="form-input" value={form.email} readOnly style={{ opacity: 0.6, cursor: 'not-allowed' }} />
+                </div>
               </div>
-              <div className="form-group">
-                <label className="form-label">E-mail</label>
-                <input type="email" className="form-input" value={form.email} readOnly style={{ opacity: 0.6 }} />
+              <div className="form-row" style={{ marginBottom: '1.5rem' }}>
+                <div className="form-group">
+                  <label className="form-label">Departamento</label>
+                  <input type="text" className="form-input" value={form.department} onChange={e => setForm(f => ({ ...f, department: e.target.value }))} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Cargo / Role</label>
+                  {/* VULN: Mass Assignment — user can change their own role to admin */}
+                  <input type="text" className="form-input" value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))} />
+                </div>
               </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Departamento</label>
-                <input type="text" className="form-input" value={form.department} onChange={e => setForm(f => ({ ...f, department: e.target.value }))} />
+              <div className="pref-save-area">
+                <button type="submit" className="btn btn-primary" disabled={saving}>
+                  <span className="material-symbols-outlined">save</span>
+                  {saving ? 'Salvando...' : 'Salvar Alterações'}
+                </button>
               </div>
-              <div className="form-group">
-                <label className="form-label">Cargo / Role</label>
-                {/* VULN: Mass Assignment — user can change their own role to admin */}
-                <input type="text" className="form-input" value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))} />
-              </div>
-            </div>
-            <div style={{ marginTop: '1rem' }}>
-              <button className="btn btn-primary" onClick={handleSave}>
-                <span className="material-symbols-outlined">save</span>
-                Salvar Alterações
-              </button>
-            </div>
+            </form>
           </div>
         </div>
 
@@ -83,9 +90,9 @@ export default function Preferences() {
             <div className="form-group">
               <label className="form-label">Tema</label>
               <select className="form-input" value={theme} onChange={e => setTheme(e.target.value)}>
-                <option value="light">Claro</option>
-                <option value="dark">Escuro</option>
-                <option value="auto">Automático (sistema)</option>
+                <option value="light">☀️ Claro</option>
+                <option value="dark">🌙 Escuro</option>
+                <option value="auto">💻 Automático (sistema)</option>
               </select>
             </div>
             <div className="form-group" style={{ marginTop: '1rem' }}>

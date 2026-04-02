@@ -49,12 +49,23 @@ export default function Analytics() {
     const searchTerm = filters.contract || filters.service || filters.activity
 
     if (searchTerm) {
-      // Uses the vulnerable RPC function that concatenates strings
+      // VULN: We use the vulnerable RPC logic
       const { data, error } = await supabase.rpc('search_entries', {
-        search_term: searchTerm  // VULN: this goes directly into SQL concatenation
+        search_term: searchTerm  
       })
 
-      if (!error && data) {
+      if (error) {
+         console.error('Erro no RPC:', error)
+         // Fallback so the app "works basically" if the RPC throws a type error
+         const res = await supabase.from('analytics_logs').select('*')
+         if (res.data) {
+           const filtered = res.data.filter(l => 
+             (l.contract?.includes(searchTerm) || l.service?.includes(searchTerm) || l.activity?.includes(searchTerm))
+           )
+           setLogs(filtered)
+           setTotalHours(filtered.reduce((sum, l) => sum + Number(l.hours || 0), 0))
+         }
+      } else if (data) {
         setLogs(data)
         setTotalHours(data.reduce((sum, l) => sum + Number(l.hours || 0), 0))
       }
@@ -62,6 +73,22 @@ export default function Analytics() {
       await fetchLogs()
     }
     setLoading(false)
+  }
+
+  const handleExport = () => {
+    if (logs.length === 0) return alert('Nenhum dado para exportar')
+    const headers = ['Data', 'Documento', 'Contrato', 'Serviço', 'Atividade', 'Histórico', 'Início', 'Fim', 'Horas']
+    const rows = logs.map(l => [
+      l.log_date, l.document, l.contract, l.service, l.activity, l.description, l.start_time?.slice(0,5), l.end_time?.slice(0,5), l.hours
+    ])
+    const csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n" + rows.map(e => e.join(",")).join("\n")
+    const encodedUri = encodeURI(csvContent)
+    const link = document.createElement("a")
+    link.setAttribute("href", encodedUri)
+    link.setAttribute("download", "relatorio_horas.csv")
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   const handleFilterChange = (field, value) => {
@@ -76,11 +103,11 @@ export default function Analytics() {
           <p className="section-subtitle">Consulte e exporte seus lançamentos detalhados por período.</p>
         </div>
         <div className="page-header-actions">
-          <button className="btn btn-primary">
+          <button className="btn btn-primary" onClick={handleExport}>
             <span className="material-symbols-outlined">file_download</span>
-            Exportar Excel
+            Exportar Excel / CSV
           </button>
-          <button className="btn btn-outline">
+          <button className="btn btn-outline" onClick={() => window.print()}>
             <span className="material-symbols-outlined">print</span>
           </button>
         </div>

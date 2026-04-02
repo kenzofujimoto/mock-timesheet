@@ -1,4 +1,5 @@
 import { useLocation, useSearchParams } from 'react-router-dom'
+import { useToast } from './Toast'
 
 const titles = {
   '/': 'Dashboard',
@@ -15,6 +16,7 @@ const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
 export default function Header() {
   const { pathname } = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
+  const showToast = useToast()
   const now = new Date()
   const title = titles[pathname] || 'Dashboard'
 
@@ -52,7 +54,7 @@ export default function Header() {
             dangerouslySetInnerHTML={{ __html: `Resultados para: <strong>${searchQuery}</strong>` }}
           />
         )}
-        <button className="btn-icon notification-btn">
+        <button className="btn-icon notification-btn" onClick={() => showToast && showToast('Não há novas notificações no momento.')}>
           <span className="notification-dot" />
           <span className="material-symbols-outlined">notifications</span>
         </button>

@@ -117,3 +117,14 @@
 .support-info-card{background:var(--color-surface);border-radius:var(--radius-lg);border:1px solid var(--color-border);box-shadow:var(--shadow-xs);padding:1.25rem;text-align:center}
 .support-info-card h4{font-size:.875rem;font-weight:600;color:var(--color-text);margin-top:.5rem}
 .support-info-card p{font-size:.75rem;color:var(--color-text-muted);margin-top:.25rem}
+
+/* ===== PREFERENCES EXTRAS ===== */
+.pref-save-area{padding-top:1.25rem;border-top:1px solid var(--color-border);margin-top:.5rem}
+.pref-success-msg{padding:.625rem 1rem;background:var(--color-success-bg);color:var(--color-success-text);border:1px solid var(--color-success-border);border-radius:var(--radius);font-size:.8125rem;margin-bottom:1rem}
+
+/* ===== DARK MODE TRANSITIONS ===== */
+.stat-card,.pref-card,.request-form-card,.card,.today-summary-card,.clock-card,
+.request-stat-card,.support-info-card,.faq-item,.top-header,.sidebar,
+.form-input,.form-textarea{
+  transition:background-color var(--transition-slow),border-color var(--transition-slow),color var(--transition-slow),box-shadow var(--transition-slow);
+}
